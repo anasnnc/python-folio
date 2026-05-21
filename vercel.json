@@ -1,7 +1,7 @@
 {
   "builds": [
     {
-      "src": "manage.py",
+      "src": "portfolio/wsgi.py",
       "use": "@vercel/python"
     }
   ],
