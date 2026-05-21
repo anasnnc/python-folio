@@ -2,10 +2,10 @@ import os
 import django
 
 # Set up Django environment
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'portfolio_project.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'portfolio.settings')
 django.setup()
 
-from portfolio.models import Profile, Skill, Service, PricingPackage, Project
+from portfolio_app.models import Profile, Skill, Service, PricingPackage, Project
 
 def seed_database():
     print("Starting database seeding...")

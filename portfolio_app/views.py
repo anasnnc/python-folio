@@ -33,7 +33,7 @@ def home_view(request):
         'pricing_packages': pricing_packages,
         'projects': projects,
     }
-    return render(request, 'portfolio/home.html', context)
+    return render(request, 'portfolio_app/home.html', context)
 
 @require_POST
 def contact_submit_view(request):
