@@ -1,0 +1,484 @@
+{% extends 'portfolio/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="hero-container">
+        <div class="hero-main">
+            <div class="hero-content">
+                <span class="hero-badge">Hey, I'm {{ profile.name }}</span>
+                <h1 class="hero-title">{{ profile.title }}</h1>
+                <p class="hero-subtitle">{{ profile.hero_subtitle }}</p>
+                <div class="hero-actions">
+                    <a href="#contact" class="btn btn-primary">Get in touch <i class="fas fa-arrow-right"></i></a>
+                    <a href="#projects" class="btn btn-secondary">View my work</a>
+                </div>
+            </div>
+            
+            <div class="hero-stats">
+                <div class="stats-gradient-box">
+                    <div class="stats-header">
+                        <h3>Core Competencies</h3>
+                    </div>
+                    <div class="stats-grid">
+                        {% for skill in skills|slice:":4" %}
+                            <div class="stat-card">
+                                <span class="stat-num">{{ skill.number }}</span>
+                                <span class="stat-label">{{ skill.name }}</span>
+                            </div>
+                        {% empty %}
+                            <!-- Fallback default skills if database is not seeded yet -->
+                            <div class="stat-card">
+                                <span class="stat-num">+01</span>
+                                <span class="stat-label">Brand Strategy</span>
+                            </div>
+                            <div class="stat-card">
+                                <span class="stat-num">+02</span>
+                                <span class="stat-label">Brand Identity Design</span>
+                            </div>
+                            <div class="stat-card">
+                                <span class="stat-num">+03</span>
+                                <span class="stat-label">Packaging Design</span>
+                            </div>
+                            <div class="stat-card">
+                                <span class="stat-num">+04</span>
+                                <span class="stat-label">Creative Direction</span>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Logo Bar -->
+<section class="logo-bar">
+    <div class="container">
+        <p class="logo-bar-title">Trusted by brands I've helped shape</p>
+        <div class="logo-grid">
+            <div class="logo-item"><i class="fas fa-circle-notch"></i> Supa Blox</div>
+            <div class="logo-item"><i class="fas fa-bolt"></i> Hype Blox</div>
+            <div class="logo-item"><i class="fas fa-square"></i> Frame Blox</div>
+            <div class="logo-item"><i class="fas fa-adjust"></i> Ultra Blox</div>
+        </div>
+    </div>
+</section>
+
+<!-- About Section -->
+<section id="about" class="about-section">
+    <div class="container">
+        <div class="about-grid">
+            <div class="about-content">
+                <span class="section-tag">About me</span>
+                <h2 class="about-heading">{{ profile.about_heading }}</h2>
+                <h3 class="about-subheading">{{ profile.about_subheading }}</h3>
+                <p class="about-text">{{ profile.about_bio }}</p>
+                <div class="about-actions">
+                    <a href="#contact" class="btn btn-primary">Work Together</a>
+                    {% if profile.resume %}
+                        <a href="{{ profile.resume.url }}" download class="btn btn-secondary"><i class="fas fa-download"></i> Download CV</a>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="about-image-wrapper">
+                <div class="about-image-container">
+                    {% if profile.about_image %}
+                        <img src="{{ profile.about_image.url }}" alt="{{ profile.name }}" class="profile-img">
+                    {% else %}
+                        <!-- Visual Illustration if no image is uploaded yet -->
+                        <div class="profile-img-placeholder">
+                            <i class="fas fa-user-tie"></i>
+                            <span>{{ profile.name }}</span>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Behind the Designs -->
+<section class="behind-designs">
+    <div class="container">
+        <div class="behind-header">
+            <div class="behind-header-left">
+                <span class="section-tag">Behind the Designs</span>
+                <h2>{{ profile.behind_title }}</h2>
+            </div>
+            <div class="behind-header-right">
+                <p>{{ profile.behind_text }}</p>
+                <a href="#contact" class="btn btn-accent btn-sm">Let's Build Something Meaningful <i class="fas fa-arrow-right"></i></a>
+            </div>
+        </div>
+        
+        <div class="behind-grid">
+            <!-- 3 Modern B&W Grid items -->
+            <div class="behind-card">
+                <div class="behind-image-placeholder b-img-1">
+                    <i class="fas fa-tshirt"></i>
+                    <span>Apparel Concepts</span>
+                </div>
+            </div>
+            <div class="behind-card">
+                <div class="behind-image-placeholder b-img-2">
+                    <i class="fas fa-headphones"></i>
+                    <span>Product Audio Tech</span>
+                </div>
+            </div>
+            <div class="behind-card">
+                <div class="behind-image-placeholder b-img-3">
+                    <i class="fas fa-wine-bottle"></i>
+                    <span>Eco Packaging</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Works Section -->
+<section id="projects" class="works-section">
+    <div class="container">
+        <div class="works-header">
+            <div class="works-title-area">
+                <span class="section-tag">Portfolio</span>
+                <h2>Selected Works</h2>
+            </div>
+            <p class="works-desc">A curated showcase of branding, packaging, and design systems built with precision and intent.</p>
+        </div>
+        
+        <div class="projects-grid">
+            {% for project in projects %}
+                <div class="project-card" 
+                     data-title="{{ project.title }}"
+                     data-category="{{ project.category }}"
+                     data-description="{{ project.description }}"
+                     data-image="{{ project.image.url }}"
+                     data-url="{{ project.url|default:'' }}">
+                    <div class="project-img-container">
+                        <img src="{{ project.image.url }}" alt="{{ project.title }}">
+                        <div class="project-overlay">
+                            <span class="project-category-tag">{{ project.category }}</span>
+                            <h3 class="project-card-title">{{ project.title }}</h3>
+                            <button class="btn-view-project">View Project <i class="fas fa-chevron-right"></i></button>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <!-- Fallback template projects before database seed -->
+                <div class="project-card-fallback-wrapper" style="grid-column: 1 / -1; text-align: center; padding: 4rem 2rem;">
+                    <i class="fas fa-images" style="font-size: 3rem; color: var(--accent-orange); margin-bottom: 1rem;"></i>
+                    <h3>No Projects Yet</h3>
+                    <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Use the Django admin panel to upload your project works!</p>
+                    <a href="/admin/" class="btn btn-primary btn-sm">Go to Admin</a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Pricing Section -->
+<section id="pricing" class="pricing-section">
+    <div class="container">
+        <div class="pricing-header">
+            <span class="section-tag">Pricing</span>
+            <h2>Simple Packages for Every Stage</h2>
+            <p>Clear, transparent pricing structured to align with your design needs.</p>
+        </div>
+        
+        <div class="pricing-grid">
+            {% for package in pricing_packages %}
+                <div class="pricing-card {% if package.is_popular %}popular{% endif %}">
+                    {% if package.is_popular %}
+                        <span class="popular-badge">Popular</span>
+                    {% endif %}
+                    <span class="package-name">{{ package.name }}</span>
+                    <div class="package-price">
+                        <span class="price-val">{{ package.price }}</span>
+                        <span class="price-cycle">/ {{ package.billing }}</span>
+                    </div>
+                    <ul class="package-features">
+                        {% for feature in package.features_list %}
+                            <li><i class="fas fa-check"></i> {{ feature }}</li>
+                        {% endfor %}
+                    </ul>
+                    <a href="#contact" class="btn {% if package.is_popular %}btn-primary{% else %}btn-secondary{% endif %} package-cta">{{ package.cta_text }} <i class="fas fa-arrow-right"></i></a>
+                </div>
+            {% empty %}
+                <!-- Fallback default pricing packages -->
+                <div class="pricing-card">
+                    <span class="package-name">Starter</span>
+                    <div class="package-price">
+                        <span class="price-val">$1990</span>
+                        <span class="price-cycle">/ project</span>
+                    </div>
+                    <ul class="package-features">
+                        <li><i class="fas fa-check"></i> Logo design</li>
+                        <li><i class="fas fa-check"></i> Typography selection</li>
+                        <li><i class="fas fa-check"></i> Basic brand guide</li>
+                    </ul>
+                    <a href="#contact" class="btn btn-secondary package-cta">Get in touch <i class="fas fa-arrow-right"></i></a>
+                </div>
+                
+                <div class="pricing-card popular">
+                    <span class="popular-badge">Popular</span>
+                    <span class="package-name">Pro plan</span>
+                    <div class="package-price">
+                        <span class="price-val">$2990</span>
+                        <span class="price-cycle">/ project</span>
+                    </div>
+                    <ul class="package-features">
+                        <li><i class="fas fa-check"></i> Full visual identity</li>
+                        <li><i class="fas fa-check"></i> Brand strategy</li>
+                        <li><i class="fas fa-check"></i> Detailed brandbook</li>
+                        <li><i class="fas fa-check"></i> Social templates</li>
+                    </ul>
+                    <a href="#contact" class="btn btn-primary package-cta">Get in touch <i class="fas fa-arrow-right"></i></a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Services Section -->
+<section class="services-section">
+    <div class="container">
+        <div class="services-grid-wrapper">
+            <div class="services-intro">
+                <span class="section-tag">Services</span>
+                <h2>What I Can Help You With</h2>
+                <p>From strategy to visuals, I offer tailored design solutions to help your brand grow with clarity, authority, and emotional connection.</p>
+                <a href="#contact" class="btn btn-primary">Start a Project</a>
+            </div>
+            
+            <div class="services-list">
+                {% for service in services %}
+                    <div class="service-card">
+                        <div class="service-icon">
+                            {% if service.icon %}
+                                <i class="{{ service.icon }}"></i>
+                            {% else %}
+                                <i class="fas fa-bezier-curve"></i>
+                            {% endif %}
+                        </div>
+                        <div class="service-content">
+                            <h3>{{ service.title }}</h3>
+                            <p>{{ service.description }}</p>
+                        </div>
+                    </div>
+                {% empty %}
+                    <!-- Fallback default services -->
+                    <div class="service-card">
+                        <div class="service-icon"><i class="fas fa-drafting-compass"></i></div>
+                        <div class="service-content">
+                            <h3>Brand Identity Design</h3>
+                            <p>Crafting memorable logos, color palettes, and typography guidelines that uniquely represent your company.</p>
+                        </div>
+                    </div>
+                    <div class="service-card">
+                        <div class="service-icon"><i class="fas fa-box-open"></i></div>
+                        <div class="service-content">
+                            <h3>Packaging Design</h3>
+                            <p>Designing labels and structure for products that stand out on retail shelves and create a premium unboxing experience.</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Recent Work Flat List -->
+<section class="recent-collaborations">
+    <div class="container">
+        <div class="collab-grid">
+            <div class="collab-left">
+                <span class="section-tag">Recent Work</span>
+                <h2>Latest Projects & Collaborations</h2>
+                <p>A look at what I've been working on lately—designs, stories, and creative partnerships.</p>
+            </div>
+            
+            <div class="collab-right">
+                <div class="collab-list">
+                    {% for project in projects|slice:":4" %}
+                        <div class="collab-item">
+                            <div class="collab-info">
+                                <span class="collab-category">{{ project.category }}</span>
+                                <h3 class="collab-title">{{ project.title }}</h3>
+                            </div>
+                            <span class="collab-year">2026</span>
+                        </div>
+                    {% empty %}
+                        <div class="collab-item">
+                            <div class="collab-info">
+                                <span class="collab-category">Brand Identity Design</span>
+                                <h3 class="collab-title">Kin Studio</h3>
+                            </div>
+                            <span class="collab-year">2026</span>
+                        </div>
+                        <div class="collab-item">
+                            <div class="collab-info">
+                                <span class="collab-category">Packaging Design</span>
+                                <h3 class="collab-title">Field Coffee Co.</h3>
+                            </div>
+                            <span class="collab-year">2025</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Section -->
+<section id="contact" class="contact-section">
+    <div class="container">
+        <div class="contact-grid">
+            <div class="contact-info">
+                <span class="section-tag">Get in touch</span>
+                <h2>Let's build something beautiful together</h2>
+                <p>Have an upcoming project, a branding question, or just want to say hi? Drop me a message and I'll get back to you within 24 hours.</p>
+                
+                <div class="contact-details">
+                    <div class="contact-detail-item">
+                        <i class="fas fa-envelope"></i>
+                        <div>
+                            <span>Email me</span>
+                            <a href="mailto:{{ profile.email }}">{{ profile.email }}</a>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-detail-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div>
+                            <span>Location</span>
+                            <p>{{ profile.location }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="contact-form-container">
+                <form id="contactForm" action="{% url 'contact_submit' %}" method="POST" class="contact-form">
+                    {% csrf_token %}
+                    
+                    <div id="formStatus" class="form-message" style="display: none;"></div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="formName">Name</label>
+                            <input type="text" id="formName" name="name" placeholder="John Doe" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="formEmail">Email</label>
+                            <input type="email" id="formEmail" name="email" placeholder="john@example.com" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="formSubject">Subject</label>
+                        <input type="text" id="formSubject" name="subject" placeholder="Project Inquiry" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="formMessage">Message</label>
+                        <textarea id="formMessage" name="message" rows="5" placeholder="Tell me about your project..." required></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary btn-submit">
+                        Send Message <i class="fas fa-paper-plane"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Project Detail Modal -->
+<div class="modal" id="projectModal" aria-hidden="true">
+    <div class="modal-overlay"></div>
+    <div class="modal-wrapper">
+        <button class="modal-close" id="modalClose" aria-label="Close modal"><i class="fas fa-times"></i></button>
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="modal-category" id="modalCategory">Category</span>
+                <h2 class="modal-title" id="modalTitle">Project Title</h2>
+            </div>
+            <div class="modal-image-container">
+                <img src="" alt="" id="modalImg">
+            </div>
+            <div class="modal-body">
+                <p id="modalDesc">Project description goes here.</p>
+                <div class="modal-actions" id="modalActions">
+                    <a href="" target="_blank" id="modalLink" class="btn btn-primary btn-sm">Visit Project Site <i class="fas fa-external-link-alt"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Project Modal Script -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const modal = document.getElementById('projectModal');
+        const overlay = modal.querySelector('.modal-overlay');
+        const closeBtn = document.getElementById('modalClose');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalCategory = document.getElementById('modalCategory');
+        const modalImg = document.getElementById('modalImg');
+        const modalDesc = document.getElementById('modalDesc');
+        const modalLink = document.getElementById('modalLink');
+        const modalActions = document.getElementById('modalActions');
+
+        const openModal = (card) => {
+            const title = card.getAttribute('data-title');
+            const category = card.getAttribute('data-category');
+            const desc = card.getAttribute('data-description');
+            const imgUrl = card.getAttribute('data-image');
+            const url = card.getAttribute('data-url');
+
+            modalTitle.textContent = title;
+            modalCategory.textContent = category;
+            modalImg.src = imgUrl;
+            modalImg.alt = title;
+            modalDesc.textContent = desc;
+
+            if (url) {
+                modalLink.href = url;
+                modalActions.style.display = 'block';
+            } else {
+                modalActions.style.display = 'none';
+            }
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Disable background scrolling
+        };
+
+        const closeModal = () => {
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+        };
+
+        // Attach click listeners to all project cards
+        document.querySelectorAll('.project-card').forEach(card => {
+            card.addEventListener('click', () => openModal(card));
+        });
+
+        // Close on close button or overlay click
+        closeBtn.addEventListener('click', closeModal);
+        overlay.addEventListener('click', closeModal);
+
+        // Close on escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modal.classList.contains('active')) {
+                closeModal();
+            }
+        });
+    });
+</script>
+
+{% endblock %}

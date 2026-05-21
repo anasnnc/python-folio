@@ -1,0 +1,189 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ profile.name }} | {{ profile.title }}</title>
+    <meta name="description" content="Portfolio of {{ profile.name }} - Graphic Designer. View my works, skills, and services.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'portfolio/css/styles.css' %}">
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <header class="navbar-header">
+        <div class="nav-container">
+            <a href="#" class="logo">
+                {{ profile.name|slice:":5" }}<span>{{ profile.name|slice:"5:" }}</span>
+            </a>
+            
+            <nav class="nav-links" id="navLinks">
+                <a href="#about" class="nav-item">About</a>
+                <a href="#projects" class="nav-item">Projects</a>
+                <a href="#services" class="nav-item">Services</a>
+                <a href="#pricing" class="nav-item">Pricing</a>
+            </nav>
+            
+            <div class="nav-right">
+                <a href="#contact" class="btn btn-primary btn-nav">Get in touch</a>
+                <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle Menu">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <a href="#" class="logo-footer">{{ profile.name }}</a>
+                    <p class="footer-tagline">Blending strategy and visual aesthetics to build premium brands.</p>
+                </div>
+                <div class="footer-socials">
+                    {% if profile.linkedin %}
+                        <a href="{{ profile.linkedin }}" target="_blank" rel="noopener noreferrer" class="social-icon" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                    {% endif %}
+                    {% if profile.behance %}
+                        <a href="{{ profile.behance }}" target="_blank" rel="noopener noreferrer" class="social-icon" aria-label="Behance"><i class="fab fa-behance"></i></a>
+                    {% endif %}
+                    {% if profile.instagram %}
+                        <a href="{{ profile.instagram }}" target="_blank" rel="noopener noreferrer" class="social-icon" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    {% endif %}
+                    {% if profile.dribbble %}
+                        <a href="{{ profile.dribbble }}" target="_blank" rel="noopener noreferrer" class="social-icon" aria-label="Dribbble"><i class="fab fa-dribbble"></i></a>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; {% now "Y" %} {{ profile.name }}. All rights reserved.</p>
+                <div class="footer-links">
+                    <a href="#about">About</a>
+                    <a href="#projects">Projects</a>
+                    <a href="#services">Services</a>
+                    <a href="#contact">Contact</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Core Javascript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Mobile menu toggle
+            const mobileToggle = document.getElementById('mobileToggle');
+            const navLinks = document.getElementById('navLinks');
+
+            mobileToggle.addEventListener('click', () => {
+                mobileToggle.classList.toggle('active');
+                navLinks.classList.toggle('active');
+            });
+
+            // Close mobile menu when clicking a link
+            document.querySelectorAll('.nav-links a').forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileToggle.classList.remove('active');
+                    navLinks.classList.remove('active');
+                });
+            });
+
+            // Smooth scrolling
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    if (targetId === '#') return;
+                    
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        const offsetPosition = targetElement.offsetTop - 80; // height of navbar
+                        window.scrollTo({
+                            top: offsetPosition,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+
+            // AJAX Form Submission
+            const contactForm = document.getElementById('contactForm');
+            if (contactForm) {
+                contactForm.addEventListener('submit', function (e) {
+                    e.preventDefault();
+                    
+                    const submitBtn = this.querySelector('.btn-submit');
+                    const formStatus = document.getElementById('formStatus');
+                    
+                    const originalBtnText = submitBtn.innerHTML;
+                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+                    submitBtn.disabled = true;
+                    
+                    const formData = new FormData(this);
+                    const jsonData = {};
+                    formData.forEach((value, key) => jsonData[key] = value);
+                    
+                    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+                    
+                    fetch(this.action, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': csrfToken,
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        body: JSON.stringify(jsonData)
+                    })
+                    .then(response => response.json().then(data => ({ status: response.status, body: data })))
+                    .then(({ status, body }) => {
+                        if (status === 200) {
+                            formStatus.className = 'form-message success';
+                            formStatus.textContent = body.message;
+                            formStatus.style.display = 'block';
+                            contactForm.reset();
+                        } else {
+                            formStatus.className = 'form-message error';
+                            formStatus.textContent = body.message || 'Something went wrong. Please try again.';
+                            formStatus.style.display = 'block';
+                        }
+                    })
+                    .catch(err => {
+                        formStatus.className = 'form-message error';
+                        formStatus.textContent = 'An error occurred. Please check your connection and try again.';
+                        formStatus.style.display = 'block';
+                        console.error('Submission error:', err);
+                    })
+                    .finally(() => {
+                        submitBtn.innerHTML = originalBtnText;
+                        submitBtn.disabled = false;
+                        
+                        // Hide status after 5 seconds
+                        setTimeout(() => {
+                            formStatus.style.opacity = '0';
+                            setTimeout(() => {
+                                formStatus.style.display = 'none';
+                                formStatus.style.opacity = '1';
+                            }, 500);
+                        }, 5000);
+                    });
+                });
+            }
+        });
+    </script>
+</body>
+</html>
