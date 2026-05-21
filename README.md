@@ -63,10 +63,3 @@ Open **[http://127.0.0.1:8000/](http://127.0.0.1:8000/)** in your browser.
 
 ---
 
-## Admin Panel Access
-
-Manage profile metadata, works, skills, and pricing packages at:
-**[http://127.0.0.1:8000/admin/](http://127.0.0.1:8000/admin/)**
-
-- **Username**: `admin`
-- **Password**: `adminpass`
